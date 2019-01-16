@@ -26,7 +26,7 @@
     "babel-loader": "^7.1.4",
     "babel-minify-webpack-plugin": "^0.3.0",
     "babel-preset-env": "^1.6.1",
-    "eslint": "^4.18.2",
+    "eslint": "^5.12.0",
     "eslint-import-resolver-webpack": "^0.8.4",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-import": "^2.9.0",
