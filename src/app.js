@@ -23,13 +23,19 @@ space.add({
     const startPoint = space.center
     const endPoint = space.pointer
 
-    const sign = Math.sign(endPoint.y - startPoint.y)
+    const startToEnd = endPoint.$subtract(startPoint).$abs()
+    let midpoint
+    if (startToEnd.x < startToEnd.y) {
+      const sign = Math.sign(endPoint.y - startPoint.y)
+      const curveStart = Math.tan(sign * Math.PI / 4) * Math.abs(endPoint.x - startPoint.x)
+      midpoint = new Pt(startPoint.x, endPoint.y - curveStart)
+    }
+    else {
+      const sign = Math.sign(startPoint.x - endPoint.x)
+      const curveStart = Math.tan(sign * Math.PI / 4) * Math.abs(endPoint.y - startPoint.y)
+      midpoint = new Pt(startPoint.x - curveStart, endPoint.y)
+    }
 
-    const curveStart = Math.tan(sign * Math.PI / 4) * Math.abs(endPoint.x - startPoint.x)
-
-    // console.log(curveStart)
-
-    const midpoint = new Pt(startPoint.x, endPoint.y - curveStart)
     form.stroke(colour, 5).line([startPoint, midpoint])
     form.stroke(colour, 5).line([midpoint, endPoint])
   },
