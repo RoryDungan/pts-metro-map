@@ -31,9 +31,9 @@ space.add({
       midpoint = new Pt(startPoint.x, endPoint.y - curveStart)
     }
     else {
-      const sign = Math.sign(startPoint.x - endPoint.x)
+      const sign = Math.sign(endPoint.x - startPoint.x)
       const curveStart = Math.tan(sign * Math.PI / 4) * Math.abs(endPoint.y - startPoint.y)
-      midpoint = new Pt(startPoint.x - curveStart, endPoint.y)
+      midpoint = new Pt(endPoint.x - curveStart, startPoint.y)
     }
 
     form.stroke(colour, 5).line([startPoint, midpoint])
