@@ -1,20 +1,20 @@
-var webpack = require('webpack');
-var path = require('path');
-const MinifyPlugin = require("babel-minify-webpack-plugin");
+const webpack = require('webpack')
+const path = require('path')
+const MinifyPlugin = require('babel-minify-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
-var BUILD_PATH = path.resolve(__dirname, 'dist');
-var LIB_NAME = "bundle";
+const BUILD_PATH = path.resolve(__dirname, 'dist')
+const LIB_NAME = 'bundle'
 
 module.exports = {
-  
+
   entry: {
     pts: path.resolve( BUILD_PATH, `${LIB_NAME}.js` )
   },
 
   output: {
     library: `${LIB_NAME}`,
-    libraryTarget: 'umd',    
+    libraryTarget: 'umd',
     path: BUILD_PATH,
     filename: `${LIB_NAME}.min.js`
   },
@@ -24,10 +24,10 @@ module.exports = {
   },
 
   plugins: [
-    
+
     new MinifyPlugin({}, {
       comments: false
     })
   ]
 
-};
+}

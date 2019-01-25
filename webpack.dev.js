@@ -1,12 +1,12 @@
-var webpack = require('webpack');
-var path = require('path');
+const webpack = require('webpack')
+const path = require('path')
 
-var APP_PATH = path.resolve(__dirname, 'src/app.js')
-var BUILD_PATH = path.resolve(__dirname, 'dist')
-var LIB_NAME = "bundle";
+const APP_PATH = path.resolve(__dirname, 'src/app.js')
+const BUILD_PATH = path.resolve(__dirname, 'dist')
+const LIB_NAME = 'bundle'
 
 module.exports = {
-  
+
   entry: {
     pts: APP_PATH
   },
@@ -27,24 +27,24 @@ module.exports = {
   module: {
     rules: [
       {
-          test: /\.js$/,
-          exclude: /(node_modules|bower_components)/,
-          use: {
-            loader: 'babel-loader',
-            options: {
-                presets: [["env", { "loose": true, "modules": false }]]
-            }
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [['env', { 'loose': true, 'modules': false }]]
           }
+        }
       },
-      
+
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: "eslint-loader"
+        loader: 'eslint-loader'
       }
 
 
     ]
   }
 
-};
+}
