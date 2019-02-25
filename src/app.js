@@ -4,7 +4,7 @@
 // Source code licensed under Apache License 2.0.
 // Copyright © 2017 William Ngan. (https://github.com/williamngan/pts)
 
-import {CanvasSpace, Create, Pt, Polygon} from 'pts'
+import { CanvasSpace, Create, Geom, Line, Pt, Polygon, Rectangle, Mat } from 'pts'
 
 import { createStateMachine } from './state-machine'
 
@@ -19,10 +19,7 @@ console.log('test')
 
 const colour = '#42e'
 
-const lines = [{
-  colour,
-  points: []
-}]
+const lines = []
 
 const lineBetweenPoints = (start, end) => {
   const startToEnd = end.$subtract(start).$abs()
@@ -43,8 +40,54 @@ const lineBetweenPoints = (start, end) => {
 
 const drawLine = (colour, points) => form.stroke(colour, 5).line(points)
 
+/**
+ * Check if a point is within range of a line.
+ * Works by checking that the point is within distance of the line and also that
+ * the nearest point on the line perpendicular to the point is within the bounds
+ * of the line so that we exlucde values beyond the start or the end of the line.
+ * @param {*} point Point to check
+ * @param {*} line The line we are checking against
+ * @param {*} tolerance How close the point must be before we consider it touching the line
+ */
+const isPointNearLine = (point, line, tolerance) => {
+  const perpendicular = Line.perpendicularFromPt(line, point)
+  return Rectangle.withinBound(line, perpendicular) &&
+    Line.distanceFromPt(line, point) < tolerance
+}
+
+const isPointNearRoute = (point, route, tolerance) => Polygon.lines(route, false)
+  .reduce((acc, curr) => acc || isPointNearLine(point, curr, tolerance), false)
+
+const getRouteAtPosition = (point, routes) => routes.reduce(
+  (acc, curr) => isPointNearRoute(point, curr.points, 3) ? curr : acc,
+  null
+)
+
 const rootState = {
+  action: (type, px, py, evt) => {
+    if (type === 'down') {
+      const clickedRoute = getRouteAtPosition([px, py], lines)
+      if (clickedRoute) {
+        const index = lines.indexOf(clickedRoute)
+        console.log('deleting route ' + index)
+        lines.splice(index, 1)
+      }
+      else {
+        stateMachine.push(createLineState)
+      }
+    }
+  },
+
   update: () => {
+    for (const route of lines) {
+      route.colour = colour
+    }
+
+    const routeUnderCursor = getRouteAtPosition(space.pointer, lines)
+    if (routeUnderCursor) {
+      routeUnderCursor.colour = '#f00'
+    }
+
     for (const line of lines) {
       drawLine(line.colour, line.points)
     }
@@ -67,6 +110,12 @@ const createLineState = {
       colour: '#42e',
       points: lineBetweenPoints(newLineStart, space.pointer)
     })
+  },
+
+  action: (type, px, py, evt) => {
+    if (type === 'up') {
+      stateMachine.pop()
+    }
   }
 }
 
@@ -74,12 +123,7 @@ const stateMachine = createStateMachine(rootState)
 
 space.add({
   action: (type, px, py, evt) => {
-    if (type === 'down') {
-      stateMachine.push(createLineState)
-    }
-    else if (type === 'up') {
-      stateMachine.pop()
-    }
+    stateMachine.action(type, px, py, evt)
   },
 
   start: (bound) => {
