@@ -23,6 +23,12 @@ export const createStateMachine = rootState => {
           currentState.update(stateMachine)
         }
       }
+    },
+    action: (type, px, py, evt) => {
+      const currentState = stateStack[stateStack.length - 1]
+      if (typeof currentState.action === 'function') {
+        currentState.action(type, px, py, evt)
+      }
     }
   }
   return stateMachine
