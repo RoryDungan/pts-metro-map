@@ -24,6 +24,8 @@ module.exports = {
     extensions: ['.webpack.js', '.web.js', '.js']
   },
 
+  devtool: 'source-map',
+
   module: {
     rules: [
       {
